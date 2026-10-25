@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDF Invoice Extractor</title>
+  <meta name="description" content="Extract and validate structured data from PDF invoices.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%232f6fdb'/><path d='M10 8h9l5 5v11H10z' fill='white'/></svg>">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <div class="brand">
+        <span class="logo" aria-hidden="true"></span>
+        <span>PDF Invoice Extractor</span>
+      </div>
+      <nav>
+        <a href="/docs" target="_blank" rel="noopener">API docs</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="intro">
+      <h1>Turn PDF invoices into validated data</h1>
+      <p>
+        Upload invoices to extract the number, parties, dates, totals and line items.
+        Every result is cross-checked: line items must add up to the subtotal, and
+        subtotal + tax must equal the total. Files are processed in memory and never stored.
+      </p>
+    </section>
+
+    <section>
+      <label id="dropzone" class="dropzone" for="file-input">
+        <input id="file-input" type="file" accept="application/pdf,.pdf" multiple hidden>
+        <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true">
+          <path d="M12 16V4m0 0-4 4m4-4 4 4M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"
+                fill="none" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <strong>Drop PDF invoices here</strong>
+        <span class="muted">or click to choose files · max 20 files, 10 MB each</span>
+      </label>
+      <div class="actions">
+        <button id="demo-btn" type="button" class="btn secondary">Try the demo invoices</button>
+        <span id="status" class="muted" role="status" aria-live="polite"></span>
+      </div>
+    </section>
+
+    <section id="results" hidden>
+      <div class="summary">
+        <div id="summary-text"></div>
+        <div class="downloads">
+          <button id="dl-json" type="button" class="btn secondary">Download JSON</button>
+          <button id="dl-csv" type="button" class="btn secondary">Download CSV</button>
+        </div>
+      </div>
+      <div id="cards"></div>
+    </section>
+  </main>
+
+  <footer class="wrap muted">
+    Built with Python, FastAPI and pdfplumber.
+  </footer>
+
+  <template id="card-template">
+    <article class="card">
+      <header class="card-head">
+        <div>
+          <h2 class="file-name"></h2>
+          <span class="badge"></span>
+        </div>
+        <div class="confidence" title="Share of key fields found">
+          <span class="muted">Confidence</span>
+          <div class="meter"><div class="meter-fill"></div></div>
+          <span class="confidence-value"></span>
+        </div>
+      </header>
+      <p class="error"></p>
+      <dl class="fields"></dl>
+      <div class="table-wrap">
+        <table class="items">
+          <thead>
+            <tr><th>Description</th><th class="num">Qty</th>
+                <th class="num">Unit price</th><th class="num">Amount</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <ul class="issues"></ul>
+    </article>
+  </template>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
